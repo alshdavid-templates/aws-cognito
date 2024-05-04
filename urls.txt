@@ -1,0 +1,7 @@
+https://alshdavid-example-auth.auth.ap-southeast-2.amazoncognito.com/oauth2/authorize?response_type=code&client_id=1o7n2pa89hgh83hcks0r0ljah2&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback
+
+https://alshdavid-example-auth.auth.ap-southeast-2.amazoncognito.com/logout?client_id=1o7n2pa89hgh83hcks0r0ljah2&logout_uri=http%3A%2F%2Flocalhost%3A3000%2Fauth%2Flogout
+
+
+alshdavid@gmail.com
+Em3wRkB76yRNv92@

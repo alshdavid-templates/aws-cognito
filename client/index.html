@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    main * {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <button id="btn_login">Login</button>
+    <button id="btn_logout">Logout</button>
+    <button id="btn_refresh">Refresh</button>
+    
+    <code></code>
+  </main>
+  <script src="./auth.js"></script>
+  <script>
+    document.querySelector('#btn_login').addEventListener('click', async () => {
+      await login()
+      console.log('logged in')
+    })
+
+    document.querySelector('#btn_logout').addEventListener('click', async () => {
+      await logout()
+      console.log('logged out')
+    })
+    document.querySelector('#btn_refresh').addEventListener('click', async () => {
+      await refresh()
+    })
+  </script>
+</body>
+</html>
