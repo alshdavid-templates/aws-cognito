@@ -1,14 +1,14 @@
 function login() {
   const target = new URL(window.location.origin)
   target.pathname = '/login'
-  target.state = JSON.stringify({ return_url: window.location.href })
+  // target.searchParams.set('') = JSON.stringify({ return_url: window.location.href })
   window.location.assign(target)
 }
 
 async function logout() {
   const target = new URL(window.location.origin)
   target.pathname = '/logout'
-  target.state = JSON.stringify({ return_url: window.location.href })
+  // target.state = JSON.stringify({ return_url: window.location.href })
   window.location.assign(target)
 }
 
