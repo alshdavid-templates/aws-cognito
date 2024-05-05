@@ -1,0 +1,7 @@
+{
+	"dependencies": {
+		"npm": "^10.7.0",
+		"install": "^0.13.0",
+		"aws-jwt-verify": "^4.0.1"
+	}
+}
