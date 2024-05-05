@@ -6,10 +6,13 @@ export async function api_auth_logout_callback_get(
   /** @type {http.IncomingMessage} */ req,
   /** @type {http.ServerResponse} */ res,
 ) {
-  let return_url = '/'
-
+  let location = '/'
+  
   const state = url.searchParams.get('state')
-  if (state) return_url = `/?state=${state}`
+  if (state) {
+    location += `?state=${state}`
+  }
+
 
   res.setHeader('Set-Cookie', [
     `auth_refresh_token=null; SameSite=Strict; Path=/auth; HttpOnly; Expires=${new Date(0).toUTCString()}`,
@@ -17,7 +20,7 @@ export async function api_auth_logout_callback_get(
     `auth_user_email=null; SameSite=Strict; Path=/; Expires=${new Date(0).toUTCString()}`,
   ])
 
-  res.setHeader('Location', '/')
+  res.setHeader('Location', location)
   res.statusCode = 307
   res.end()
 }

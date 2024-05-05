@@ -11,9 +11,12 @@ export async function api_auth_login_callback_get(
   const code = url.searchParams.get('code')
   const resp = await exchange(code)
 
+  let location = '/'
+  
   const state = url.searchParams.get('state')
-  resp.state = null
-  if (state) resp.state = JSON.parse(state)
+  if (state) {
+    location += `?state=${state}`
+  }
   
   const [,payload_enc,] = resp.id_token.split('.')
   const payload = JSON.parse(atob(payload_enc))
@@ -24,7 +27,7 @@ export async function api_auth_login_callback_get(
     `auth_user_email=${payload.email}; SameSite=Strict; Path=/; Expires=${new Date(payload.exp * 1000).toUTCString()}`,
   ])
 
-  res.setHeader('Location', '/')
+  res.setHeader('Location', location)
   res.statusCode = 307
   res.end()
 }

@@ -1,19 +1,31 @@
-function login() {
-  const target = new URL(window.location.origin)
-  target.pathname = '/api/auth/login'
-  // target.searchParams.set('') = JSON.stringify({ return_url: window.location.href })
-  window.location.assign(target)
-}
+class AuthClient {
+  constructor() {}
 
-async function logout() {
-  const target = new URL(window.location.origin)
-  target.pathname = '/api/auth/logout'
-  // target.state = JSON.stringify({ return_url: window.location.href })
-  window.location.assign(target)
-}
+  navigateToLogin(
+    /** @type {Record<string, any> | undefined} */ state
+  ) {
+    const target = new URL(window.location.origin)
+    target.pathname = '/api/auth/login'
+    if (state) {
+      target.searchParams.set('state', encodeURIComponent(btoa(JSON.stringify({ return_url: window.location.href }))))
+    }
+    window.location.assign(target)
+  }
 
-async function refresh() {
-  const target = new URL(window.location.origin)
-  target.pathname = '/api/auth/refresh'
-  await fetch(target)
+  navigateToLogout(
+    /** @type {Record<string, any> | undefined} */ state
+  ) {
+    const target = new URL(window.location.origin)
+    target.pathname = '/api/auth/logout'
+    if (state) {
+      target.searchParams.set('state', encodeURIComponent(btoa(JSON.stringify({ return_url: window.location.href }))))
+    }
+    window.location.assign(target)
+  }
+
+  async refreshAuth() {
+    const target = new URL(window.location.origin)
+    target.pathname = '/api/auth/refresh'
+    await fetch(target)
+  }
 }

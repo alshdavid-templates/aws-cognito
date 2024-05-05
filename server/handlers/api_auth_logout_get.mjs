@@ -1,6 +1,5 @@
 import * as http from 'node:http'
 import { COGNITO_CLIENT_ID, COGNITO_ORIGIN, LOGOUT_ENDPOINT } from '../platform/config.mjs'
-import { parse_req_url } from '../platform/req.mjs'
 
 export async function api_auth_logout_get(
   /** @type {URL} */ url,

@@ -21,18 +21,23 @@
   </main>
   <script src="./auth.js"></script>
   <script>
+    const authClient = new AuthClient()
+
     document.querySelector('#btn_login').addEventListener('click', async () => {
-      await login()
+      authClient.navigateToLogin()
       console.log('logged in')
     })
 
     document.querySelector('#btn_logout').addEventListener('click', async () => {
-      await logout()
+      authClient.navigateToLogout()
       console.log('logged out')
     })
+
     document.querySelector('#btn_refresh').addEventListener('click', async () => {
-      await refresh()
+      await authClient.refreshAuth()
+      console.log('refreshed auth')
     })
+
     document.querySelector('#btn_protected').addEventListener('click', async () => {
       const resp = await fetch('/api/protected')
       if (resp.ok) {
