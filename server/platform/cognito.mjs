@@ -11,7 +11,7 @@ export async function exchange(
   body.set('client_secret', CLIENT_SECRET)
   body.set('grant_type', 'authorization_code')
   body.set('code', code)
-  body.set('redirect_uri', 'http://localhost:3000/auth/callback')
+  body.set('redirect_uri', 'http://localhost:3000/api/auth/login/callback')
   target.searchParams.set('scope', 'email/openid')
 
   const response = await fetch(target.toString(), {

@@ -8,35 +8,39 @@ const server = http.createServer(async (req, res) => {
     return
   }
 
-  const req_url = new URL('http://0.0.0.0' + req.url)
-  console.log(req_url.href)
+  const url = new URL('http://0.0.0.0' + req.url)
 
-  if (req_url.pathname === '/login') {
-    await handlers.login_get(req, res)
-    return
+  // Redirects client to the Cognito login page
+  if (url.pathname === '/api/auth/login') {
+    return handlers.api_auth_login_get(url, req, res)
   }
 
-  if (req_url.pathname === '/auth/callback') {
-    await handlers.auth_callback_get(req, res)
-    return
+  // Cognito navigates here after login
+  if (url.pathname === '/api/auth/login/callback') {
+    return handlers.api_auth_login_callback_get(url, req, res)
   }
 
-  if (req_url.pathname === '/logout') {
-    await handlers.logout_get(req, res)
-    return
+  // Redirects client to the Cognito logout page
+  if (url.pathname === '/api/auth/logout') {
+    return handlers.api_auth_logout_get(url, req, res)
   }
 
-  if (req_url.pathname === '/auth/logout') {
-    await handlers.auth_logout_get(req, res)
-    return
+  // Cognito navigates here after logout
+  if (url.pathname === '/api/auth/logout/callback') {
+    return handlers.api_auth_logout_callback_get(url, req, res)
+  }
+  // Endpoint to renew the auth token
+  if (url.pathname === '/api/auth/refresh') {
+    return handlers.api_auth_refresh_get(url, req, res)
   }
 
-  if (req_url.pathname === '/auth/refresh') {
-    await handlers.auth_refresh_get(req, res)
-    return
+  // Example of protected endpoint
+  if (url.pathname === '/api/protected') {
+    return handlers.api_protected(url, req, res)
   }
 
-  await handlers.client_get(req, res)
+  // Fallback
+  await handlers.client_get(url, req, res)
 })
 
 server.listen(3000, '0.0.0.0', () => {

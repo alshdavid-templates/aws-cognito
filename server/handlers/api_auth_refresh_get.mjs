@@ -2,13 +2,14 @@ import * as http from 'node:http'
 import { parseCookie } from '../platform/cookies.mjs'
 import { refresh } from '../platform/cognito.mjs'
 
-export async function auth_refresh_get(
+export async function api_auth_refresh_get(
+  /** @type {URL} */ url,
   /** @type {http.IncomingMessage} */ req,
   /** @type {http.ServerResponse} */ res,
 ) {
   const cookie = parseCookie(req.headers.cookie)
   if (!cookie.auth_refresh_token) {
-    res.statusCode = 404
+    res.statusCode = 400
     res.end()
     return
   }

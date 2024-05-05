@@ -1,20 +1,15 @@
 import * as http from 'node:http'
-import { CLIENT_ID, HOSTED_UI, LOGOUT_ENDPOINT } from '../platform/config.mjs'
 import { parse_req_url } from '../platform/req.mjs'
 
-export async function logout_get(
+export async function api_auth_logout_callback_get(
+  /** @type {URL} */ url,
   /** @type {http.IncomingMessage} */ req,
   /** @type {http.ServerResponse} */ res,
 ) {
-  const { searchParams } = parse_req_url(req)
+  let return_url = '/'
 
-  const target = new URL(HOSTED_UI)
-  target.pathname = LOGOUT_ENDPOINT
-  target.searchParams.set('client_id', CLIENT_ID)
-  target.searchParams.set('logout_uri', 'http://localhost:3000/auth/logout')
-
-  const state = searchParams.get('state')
-  if (state) searchParams.set('state', state)
+  const state = url.searchParams.get('state')
+  if (state) return_url = `/?state=${state}`
 
   res.setHeader('Set-Cookie', [
     `auth_refresh_token=null; SameSite=Strict; Path=/auth; HttpOnly; Expires=${new Date(0).toUTCString()}`,
@@ -22,7 +17,7 @@ export async function logout_get(
     `auth_user_email=null; SameSite=Strict; Path=/; Expires=${new Date(0).toUTCString()}`,
   ])
 
-  res.setHeader('Location', target.toString())
+  res.setHeader('Location', '/')
   res.statusCode = 307
   res.end()
 }
