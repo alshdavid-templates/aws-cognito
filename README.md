@@ -6,7 +6,7 @@ First set up a Cognito project with the hosted UI
 cp env/default.env env/custom.env
 nano env/custom.env
 
-source scripts/read_env env/custom.env
+source env/read_env env/custom.env
 
 node ./server/main.mjs
 ```
