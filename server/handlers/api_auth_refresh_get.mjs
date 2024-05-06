@@ -19,7 +19,7 @@ export async function api_auth_refresh_get(
   const payload = JSON.parse(atob(payload_enc))
 
   res.setHeader('Set-Cookie', [
-    `auth_access_token=${result.access_token}; SameSite=Strict; Path=/; Expires=${new Date(payload.exp * 1000).toUTCString()}`,
+    `auth_id_token=${result.id_token}; SameSite=Strict; Path=/api; HttpOnly; Expires=${new Date(payload.exp * 1000).toUTCString()}`,
   ])
 
   res.statusCode = 200

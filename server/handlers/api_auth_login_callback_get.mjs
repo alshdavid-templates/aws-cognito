@@ -23,8 +23,8 @@ export async function api_auth_login_callback_get(
 
   res.setHeader('Set-Cookie', [
     `auth_refresh_token=${resp.refresh_token}; SameSite=Strict; Path=/api/auth; HttpOnly; Expires=${new Date(payload.auth_time * 1000 + Duration.day * 30).toUTCString()}`,
-    `auth_access_token=${resp.access_token}; SameSite=Strict; Path=/api; Expires=${new Date(payload.exp * 1000).toUTCString()}`,
-    `auth_user_email=${payload.email}; SameSite=Strict; Path=/; Expires=${new Date(payload.exp * 1000).toUTCString()}`,
+    `auth_refresh_valid=true; SameSite=Strict; Path=/; Expires=${new Date(payload.auth_time * 1000 + Duration.day * 30).toUTCString()}`,
+    `auth_id_token=${resp.id_token}; SameSite=Strict; Path=/api; HttpOnly; Expires=${new Date(payload.exp * 1000).toUTCString()}`,
   ])
 
   res.setHeader('Location', location)

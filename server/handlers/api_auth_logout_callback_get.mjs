@@ -13,11 +13,10 @@ export async function api_auth_logout_callback_get(
     location += `?state=${state}`
   }
 
-
   res.setHeader('Set-Cookie', [
-    `auth_refresh_token=null; SameSite=Strict; Path=/auth; HttpOnly; Expires=${new Date(0).toUTCString()}`,
-    `auth_access_token=null; SameSite=Strict; Path=/; Expires=${new Date(0).toUTCString()}`,
-    `auth_user_email=null; SameSite=Strict; Path=/; Expires=${new Date(0).toUTCString()}`,
+    `auth_refresh_token=null; SameSite=Strict; Path=/api/auth; HttpOnly; Expires=${new Date(0).toUTCString()}`,
+    `auth_refresh_valid=null; SameSite=Strict; Path=/; Expires=${new Date(0).toUTCString()}`,
+    `auth_id_token=null; SameSite=Strict; Path=/api; HttpOnly; Expires=${new Date(0).toUTCString()}`,
   ])
 
   res.setHeader('Location', location)

@@ -19,32 +19,28 @@
     
     <code></code>
   </main>
-  <script src="./auth.js"></script>
-  <script>
+  <script type="module">
+    import { AuthClient } from './auth.js'
+
     const authClient = new AuthClient()
 
+    authClient.onAuthAction(console.warn)
+
     document.querySelector('#btn_login').addEventListener('click', async () => {
-      authClient.navigateToLogin()
-      console.log('logged in')
+      authClient.navigateToLogin({ hello: 'world' })
     })
 
     document.querySelector('#btn_logout').addEventListener('click', async () => {
       authClient.navigateToLogout()
-      console.log('logged out')
     })
 
     document.querySelector('#btn_refresh').addEventListener('click', async () => {
       await authClient.refreshAuth()
-      console.log('refreshed auth')
     })
 
     document.querySelector('#btn_protected').addEventListener('click', async () => {
-      const resp = await fetch('/api/protected')
-      if (resp.ok) {
-        console.log('auth good')
-      } else {
-        console.log('auth bad')
-      }
+      const resp = await authClient.validate()
+      console.log(resp)
     })
   </script>
 </body>

@@ -5,7 +5,7 @@ import { COGNITO_CLIENT_ID, COGNITO_USER_POOL_ID } from './platform/config.mjs';
 
 const cognitoJwtVerifier = CognitoJwtVerifier.create({
   userPoolId: COGNITO_USER_POOL_ID,
-  tokenUse: "access",
+  tokenUse: "id",
   clientId: COGNITO_CLIENT_ID,
 });
 
@@ -43,8 +43,8 @@ const server = http.createServer(async (req, res) => {
   }
 
   // Example of protected endpoint
-  if (url.pathname === '/api/protected') {
-    return handlers.api_protected(url, req, res, cognitoJwtVerifier)
+  if (url.pathname === '/api/auth/validate') {
+    return handlers.api_auth_validate(url, req, res, cognitoJwtVerifier)
   }
 
   // Fallback
