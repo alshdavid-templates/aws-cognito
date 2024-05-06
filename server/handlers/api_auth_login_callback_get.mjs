@@ -21,9 +21,17 @@ export async function api_auth_login_callback_get(
   const [,payload_enc,] = resp.id_token.split('.')
   const payload = JSON.parse(atob(payload_enc))
 
+  const auth_payload = JSON.stringify({ 
+    email: payload.email,
+    auth_time: payload.auth_time,
+    email_verified: payload.email_verified,
+    exp: payload.exp,
+  })
+
   res.setHeader('Set-Cookie', [
     `auth_refresh_token=${resp.refresh_token}; SameSite=Strict; Path=/api/auth/refresh; HttpOnly; Expires=${new Date(payload.auth_time * 1000 + Duration.day * 30).toUTCString()}`,
     `auth_refresh_valid=true; SameSite=Strict; Path=/; Expires=${new Date(payload.auth_time * 1000 + Duration.day * 30).toUTCString()}`,
+    `auth_payload=${encodeURIComponent(auth_payload)}; SameSite=Strict; Path=/; Expires=${new Date(payload.auth_time * 1000 + Duration.day * 30).toUTCString()}`,
     `auth_id_token=${resp.id_token}; SameSite=Strict; Path=/api; HttpOnly; Expires=${new Date(payload.exp * 1000).toUTCString()}`,
   ])
 

@@ -12,6 +12,7 @@
 </head>
 <body>
   <main>
+    <p id="status">Status: <span>checking auth...</span></p>
     <button id="btn_login">Login</button>
     <button id="btn_logout">Logout</button>
     <button id="btn_refresh">Refresh</button>
@@ -24,7 +25,30 @@
 
     const authClient = new AuthClient()
 
-    authClient.onAuthAction(console.warn)
+    if (authClient.getStatus()) {
+      document.querySelector('#status span').innerHTML = "logged in as "
+    } else {
+      document.querySelector('#status span').innerHTML = "logged out"
+    }
+
+    async function updateStatusLabel() {
+      if (!authClient.getStatus()) {
+        return
+      }
+      const details = authClient.getDetails()
+      if (!details) {
+        document.querySelector('#status span').innerHTML = "logged out"
+        return
+      }
+      document.querySelector('#status span').innerHTML = "logged in as " + details.email
+    }
+
+    updateStatusLabel()
+
+    authClient.onAuthAction(async (status, state) => {
+      console.warn(status, state)
+      updateStatusLabel()
+    })
 
     document.querySelector('#btn_login').addEventListener('click', async () => {
       authClient.navigateToLogin({ hello: 'world' })

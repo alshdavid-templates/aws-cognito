@@ -18,6 +18,7 @@ export async function api_auth_validate(
   try {
     const payload = await cognitoJwtVerifier.verify(auth_id_token);
     res.statusCode = 200
+    res.setHeader('Content-Type', 'application/json')
     res.write(JSON.stringify({ 
       email: payload.email,
       auth_time: payload.auth_time,

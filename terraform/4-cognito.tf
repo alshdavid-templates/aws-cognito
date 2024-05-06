@@ -1,8 +1,13 @@
 resource "aws_cognito_user_pool" "user_pool" {
   name = "oauth-user-pool"
 
-  username_attributes = ["email"]
+  # username_attributes = ["email"]
+  alias_attributes = ["email", "preferred_username"]
   auto_verified_attributes = ["email"]
+
+  username_configuration {
+    case_sensitive = true
+  }
 
   password_policy {
     minimum_length = 6
@@ -56,4 +61,8 @@ resource "aws_cognito_user_pool_client" "client" {
 resource "aws_cognito_user_pool_domain" "cognito-domain" {
   domain       = "alshdavid"
   user_pool_id = aws_cognito_user_pool.user_pool.id
+}
+
+output "cognito" {
+  value = "https://${aws_cognito_user_pool.user_pool.domain}.auth.${data.aws_region.current.name}.amazoncognito.com"
 }

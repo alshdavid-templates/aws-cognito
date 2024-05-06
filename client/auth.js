@@ -1,17 +1,33 @@
+/** @typedef {'login' | 'logout' | 'refresh' | 'validate'} ActionType */
+
 export class AuthClient {
-  /** @type {Set<(action: 'login' | 'logout' | 'refresh', state: any | undefined) => any>} */
+  /** @type {Set<(action: ActionType, state: any | undefined) => any>} */
   #listeners
 
-  /** @type {Array<['login' | 'logout' | 'refresh', any | undefined]>} */
+  /** @type {Array<[ActionType, any | undefined]>} */
   #buffer
+
+  /** @type {boolean} */
+  #status
+
+  /** @type {any} */
+  #details
 
   constructor() {
     this.#listeners = new Set()
     this.#buffer = []
 
     // await window.cookieStore.get('auth_refresh_expires')
+    const cookies = parseCookie(document.cookie)
     const authAction = window.sessionStorage.getItem('auth_action')
     const previousState = window.sessionStorage.getItem('auth_state')
+    const hasRefreshToken = cookies['auth_refresh_valid'] || false
+
+    this.#status = hasRefreshToken
+
+    if (cookies['auth_payload']) {
+      this.#details = cookies['auth_payload']
+    }
 
     if (authAction && previousState) {
       // @ts-expect-error
@@ -19,7 +35,7 @@ export class AuthClient {
     } else if (authAction && !previousState) {
       // @ts-expect-error
       this.#buffer.push([authAction, undefined])
-    } else if (window.document.cookie.includes('auth_refresh_valid=true')) {
+    } else if (hasRefreshToken) {
       this.refreshAuth()
     }
 
@@ -27,9 +43,17 @@ export class AuthClient {
     window.sessionStorage.removeItem('auth_state')
   }
 
+  getStatus() {
+    return this.#status
+  }
+
+  getDetails() {
+    return this.#details
+  }
+
   /** @returns {() => any} */
   onAuthAction(
-    /** @type {(action: 'login' | 'logout' | 'refresh', state: any | undefined) => any} */ callback
+    /** @type {(action: ActionType, state: any | undefined) => any} */ callback
   ) {
     this.#listeners.add(callback)
     while (this.#buffer.length) {
@@ -70,7 +94,11 @@ export class AuthClient {
   async refreshAuth() {
     const target = new URL(window.location.origin)
     target.pathname = '/api/auth/refresh'
-    await fetch(target)
+    const response = await fetch(target)
+    if (!response.ok) {
+      throw new Error('Invalid auth')
+    }
+    this.#details = await response.json()
     this.#notifyListeners('refresh', undefined)
   }
 
@@ -81,13 +109,27 @@ export class AuthClient {
     if (!response.ok) {
       throw new Error('Invalid auth')
     }
-    return await response.json()
+    this.#details = await response.json()
+    this.#notifyListeners('validate', undefined)
+    return this.#details
   }
 
   #notifyListeners(
-    /** @type {'login' | 'logout' | 'refresh'} */ action,
+    /** @type {ActionType} */ action,
     /** @type {any} */ state,
   ) {
     this.#listeners.forEach(listener => listener(action, state))
   }
 }
+
+/** @returns {Record<string, any>} */
+export const parseCookie = (str = '') =>
+  str.split(';')
+  .reduce((res, c) => {
+    const [key, val] = c.trim().split('=').map(decodeURIComponent)
+    try {
+      return Object.assign(res, { [key]: JSON.parse(val) })
+    } catch (e) {
+      return Object.assign(res, { [key]: val })
+    }
+  }, {});

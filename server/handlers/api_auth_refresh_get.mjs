@@ -23,5 +23,12 @@ export async function api_auth_refresh_get(
   ])
 
   res.statusCode = 200
+  res.setHeader('Content-Type', 'application/json')
+  res.write(JSON.stringify({ 
+    email: payload.email,
+    auth_time: payload.auth_time,
+    email_verified: payload.email_verified,
+    exp: payload.exp,
+  }, null, 2))
   res.end()
 }
