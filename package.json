@@ -1,7 +1,13 @@
 {
+  "scripts": {
+    "build": "npx esbuild --bundle --platform=node --outfile=./dist/function.js ./server/main_lambda.mjs"
+  },
 	"dependencies": {
-		"npm": "^10.7.0",
-		"install": "^0.13.0",
-		"aws-jwt-verify": "^4.0.1"
+    "aws-jwt-verify": "^4.0.1",
+    "install": "^0.13.0",
+    "npm": "^10.7.0"
+  },
+	"devDependencies": {
+    "esbuild": "^0.20.2"
 	}
 }

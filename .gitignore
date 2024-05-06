@@ -3,3 +3,7 @@ node_modules
 pnpm-lock.yaml
 *.env
 !default.env
+.terraform*
+*.tfstate*
+*.zip
+dist
