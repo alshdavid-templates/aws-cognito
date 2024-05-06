@@ -1,4 +1,4 @@
-import { COGNITO_CLIENT_ID, COGNITO_CLIENT_SECRET, COGNITO_ORIGIN, TOKEN_ENDPOINT } from "./config.mjs"
+import { COGNITO_CLIENT_ID, COGNITO_CLIENT_SECRET, COGNITO_ORIGIN, LOCAL_ORIGIN, TOKEN_ENDPOINT } from "./config.mjs"
 
 export async function exchange(
   /** @type {string} */ code,
@@ -11,7 +11,7 @@ export async function exchange(
   body.set('client_secret', COGNITO_CLIENT_SECRET)
   body.set('grant_type', 'authorization_code')
   body.set('code', code)
-  body.set('redirect_uri', 'http://localhost:3000/api/auth/login/callback')
+  body.set('redirect_uri', `${LOCAL_ORIGIN}/api/auth/login/callback`)
   target.searchParams.set('scope', 'email/openid')
 
   const response = await fetch(target.toString(), {
@@ -21,6 +21,10 @@ export async function exchange(
     },
     body: body.toString()
   })
+
+  if (!response.ok) {
+    throw new Error(`Unable to exchange code\nCode: ${code}`)
+  }
 
   return response.json()
 }

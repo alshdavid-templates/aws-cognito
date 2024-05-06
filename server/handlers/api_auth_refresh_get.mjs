@@ -4,8 +4,8 @@ import { refresh } from '../platform/cognito.mjs'
 
 export async function api_auth_refresh_get(
   /** @type {URL} */ url,
-  /** @type {http.IncomingMessage} */ req,
-  /** @type {http.ServerResponse} */ res,
+  /** @type {import('../platform/http.js').Request} */ req,
+  /** @type {import('../platform/http.js').Response} */ res,
 ) {
   const cookie = parseCookie(req.headers.cookie)
   if (!cookie.auth_refresh_token) {

@@ -1,15 +1,15 @@
 import * as http from 'node:http'
-import { COGNITO_CLIENT_ID, COGNITO_ORIGIN, LOGOUT_ENDPOINT } from '../platform/config.mjs'
+import { COGNITO_CLIENT_ID, COGNITO_ORIGIN, LOCAL_ORIGIN, LOGOUT_ENDPOINT } from '../platform/config.mjs'
 
 export async function api_auth_logout_get(
   /** @type {URL} */ url,
-  /** @type {http.IncomingMessage} */ req,
-  /** @type {http.ServerResponse} */ res,
+  /** @type {import('../platform/http.js').Request} */ req,
+  /** @type {import('../platform/http.js').Response} */ res,
 ) {
   const target = new URL(COGNITO_ORIGIN)
   target.pathname = LOGOUT_ENDPOINT
   target.searchParams.set('client_id', COGNITO_CLIENT_ID)
-  target.searchParams.set('logout_uri', 'http://localhost:3000/api/auth/logout/callback')
+  target.searchParams.set('logout_uri', `${LOCAL_ORIGIN}/api/auth/logout/callback`)
 
   const state = url.searchParams.get('state')
   if (state) url.searchParams.set('state', state)

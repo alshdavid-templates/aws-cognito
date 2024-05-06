@@ -1,22 +1,37 @@
 import * as path from 'node:path'
 import * as fsSync from 'node:fs'
-import * as http from 'node:http'
+import * as fs from 'node:fs/promises'
 import * as url from 'node:url'
 import { MimeType } from '../platform/mime_types.mjs'
 import { SERVER_SPA } from '../platform/config.mjs'
 
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
+const __current_file = (() => {
+  try {
+    return __dirname
+  } catch (error) {
+    
+  }
+  return url.fileURLToPath(new URL('.', import.meta.url))
+})()
+
+const __client_root = (() => {
+  if (fsSync.existsSync(path.join(__current_file, 'client'))) {
+    return path.join(__current_file, 'client')
+  } else {
+    return path.join(__current_file, '..', '..', 'client')
+  }
+})()
 
 export async function client_get(
   /** @type {URL} */ url,
-  /** @type {http.IncomingMessage} */ req,
-  /** @type {http.ServerResponse} */ res,
+  /** @type {import('../platform/http.js').Request} */ req,
+  /** @type {import('../platform/http.js').Response} */ res,
 ) {
-  let client_file = path.join(__dirname, '..', '..', 'client', url.pathname === '/' ? 'index.html' : url.pathname)
+  let client_file = path.join(__client_root, url.pathname === '/' ? 'index.html' : url.pathname)
 
   const exists = fsSync.existsSync(client_file)
   if (SERVER_SPA && !exists) {
-    client_file = path.join(__dirname, '..', '..', 'client', 'index.html')
+    client_file = path.join(__client_root, 'index.html')
   }  
   
   if (!exists) {
@@ -29,5 +44,6 @@ export async function client_get(
   res.setHeader('Content-Type', mime_type)
 
   res.statusCode = 200
-  fsSync.createReadStream(client_file).pipe(res)
+  res.write(await fs.readFile(client_file))
+  res.end()
 }

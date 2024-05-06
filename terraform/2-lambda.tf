@@ -37,6 +37,7 @@ resource "aws_lambda_function" "main" {
       COGNITO_ORIGIN = "https://${aws_cognito_user_pool.user_pool.domain}.auth.${data.aws_region.current.name}.amazoncognito.com"
       COGNITO_CLIENT_ID = aws_cognito_user_pool_client.client.id 
       COGNITO_CLIENT_SECRET = aws_cognito_user_pool_client.client.client_secret
+      LOCAL_ORIGIN = aws_apigatewayv2_stage.prod.invoke_url
     }
   }
 

@@ -4,8 +4,8 @@ import { parseCookie } from '../platform/cookies.mjs';
 
 export async function api_auth_validate(
   /** @type {URL} */ url,
-  /** @type {http.IncomingMessage} */ req,
-  /** @type {http.ServerResponse} */ res,
+  /** @type {import('../platform/http.js').Request} */ req,
+  /** @type {import('../platform/http.js').Response} */ res,
   /** @type {CognitoJwtVerifier} */ cognitoJwtVerifier,
 ) {
   let { auth_id_token } = parseCookie(req.headers.cookie)

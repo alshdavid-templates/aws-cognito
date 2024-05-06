@@ -5,8 +5,8 @@ import { Duration } from '../platform/duration.mjs'
 
 export async function api_auth_login_callback_get(
   /** @type {URL} */ url,
-  /** @type {http.IncomingMessage} */ req,
-  /** @type {http.ServerResponse} */ res,
+  /** @type {import('../platform/http.js').Request} */ req,
+  /** @type {import('../platform/http.js').Response} */ res,
 ) {
   const code = url.searchParams.get('code')
   const resp = await exchange(code)
@@ -22,7 +22,7 @@ export async function api_auth_login_callback_get(
   const payload = JSON.parse(atob(payload_enc))
 
   res.setHeader('Set-Cookie', [
-    `auth_refresh_token=${resp.refresh_token}; SameSite=Strict; Path=/api/auth; HttpOnly; Expires=${new Date(payload.auth_time * 1000 + Duration.day * 30).toUTCString()}`,
+    `auth_refresh_token=${resp.refresh_token}; SameSite=Strict; Path=/api/auth/refresh; HttpOnly; Expires=${new Date(payload.auth_time * 1000 + Duration.day * 30).toUTCString()}`,
     `auth_refresh_valid=true; SameSite=Strict; Path=/; Expires=${new Date(payload.auth_time * 1000 + Duration.day * 30).toUTCString()}`,
     `auth_id_token=${resp.id_token}; SameSite=Strict; Path=/api; HttpOnly; Expires=${new Date(payload.exp * 1000).toUTCString()}`,
   ])

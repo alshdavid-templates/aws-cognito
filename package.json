@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "npx esbuild --bundle --platform=node --outfile=./dist/function.js ./server/main_lambda.mjs"
+    "build": "npx esbuild --bundle --platform=node --outfile=./dist/function.js ./server/main_lambda.mjs && cp -r ./client ./dist"
   },
 	"dependencies": {
     "aws-jwt-verify": "^4.0.1",
